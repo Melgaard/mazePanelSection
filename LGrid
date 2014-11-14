@@ -1,0 +1,70 @@
+package ratlabyrinth;
+
+import java.awt.Color;
+import java.awt.GridLayout;
+import javax.swing.JPanel;
+
+/**
+ *
+ * @author Blotto
+ */
+class LGrid {
+    
+    public boolean[][] mazeArray = new boolean[10][10];
+    
+    
+    // Et stykke blokkode der bliver kaldt lige inde constructoren
+    // Dette blokkode laver mazens layout
+    {    
+        int[] c = { 1,1,1,1,1,1,1,0,1,1,
+                    1,1,0,0,0,0,0,0,0,1,
+                    1,1,0,1,1,1,1,1,0,1,
+                    1,0,0,1,0,1,1,1,1,1,
+                    1,0,0,1,1,1,0,0,1,1,
+                    1,1,0,1,0,0,0,1,0,1,
+                    1,0,0,1,1,1,0,0,0,1,
+                    1,1,0,0,0,0,0,1,0,1,
+                    1,1,1,0,1,1,1,0,0,1,
+                    1,1,1,1,1,1,1,0,1,1
+                    };
+        
+        for(int i = 0; i < 10; i++){
+            for (int j = 0; j < 10; j++){
+               mazeArray[i][j] = (c[j+(i*10)] == 1);
+            }
+        }        
+    }
+    
+    public boolean getMazeArray(int x, int y){
+        return mazeArray[x][y];
+    }
+    
+    //Laver et 10x10 grid og farver felterne sorte eller hvide alt efter mazeArray
+    public Object GridButtons(){
+        
+        JPanel GMazePanel = new JPanel();
+        GMazePanel.setLayout(new GridLayout(10, 10));
+        
+        for (int i = 0; i < 10; i++){
+            for(int j = 0; j < 10; j++){
+                JPanel ij = new JPanel(); 
+                  
+                if (mazeArray[i][j] == true){
+                   ij.setBackground(Color.BLACK);
+                }
+                else if (mazeArray[i][j] == false){
+                   //ij.setBackground(Color.WHITE); DONT TOUCH!
+                }
+                ij.setVisible(true);
+                GMazePanel.add(ij);
+            }
+        }
+//        this.add(GMazePanel,BorderLayout.CENTER);
+        GMazePanel.setVisible(true);
+        
+        
+        
+        return GMazePanel;
+    }
+    
+}
