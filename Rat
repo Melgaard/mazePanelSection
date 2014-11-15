@@ -1,0 +1,352 @@
+package ratlabyrinth;
+
+import java.awt.Color;
+import java.util.Random;
+import javax.swing.JPanel;
+
+/**
+ *
+ * @author Blotto
+ */
+class Rat {
+    
+    //Rottens koordinator i mazen, samt dens retning
+    int ratPositionX = 0;
+    int ratPositionY = 0;
+    String direction = "s";
+
+    // Rat type (hvordan den bevæger sig: 1 == wallhugger, 2 == randomMove, 3 == jumper rat)
+    int ratType;
+    
+    // Rotten som panel, nu ikke nede i paintRat();
+    JPanel ratBro = new JPanel();
+    
+    //constructor der sætter rattype
+    //Der er 3 rat-types. Se autoMove for at se de forskellige type of rat.
+    public Rat (int typeOfRat){
+        ratType = typeOfRat;
+    }
+
+    
+    public void placeRat(boolean[][] mazeInput){
+        for (int k = 0; k < 10; k++){
+            if (mazeInput[0][k] == false){
+                ratPositionY = k;
+            } 
+            else {
+               
+            }
+        }
+        System.out.println("Ratposition is: " + ratPositionX + " " + ratPositionY);
+    }
+    
+    public void autoMove(boolean[][] mazeInput, Rat ratToMove){
+        try {
+        //System.out.println("Rat is moving! Its position is: " + ratPositionX + " " + ratPositionY);
+        if (ratToMove.ratType == 1){
+            wallHug(mazeInput, ratToMove);
+        }
+        else if (ratToMove.ratType == 2){
+            randomMove(mazeInput, ratToMove);
+        }
+        else if (ratToMove.ratType == 3){
+            wallJumper(mazeInput, ratToMove);            
+        }
+        else {
+            System.out.println("Invalid rat type");
+        }
+        } catch (Exception ArrayIndexOutOfBoundsException){
+            System.out.println("ArrayIndexOutOfBoundsException caught!");
+        }
+    }
+
+    //Denne type rotte holder sig til en væg (venstre fra dens synspunkt), og følger denne hele vejen rundt
+    private void wallHug(boolean[][] mazeInput, Rat ratToMove) {
+        System.out.println("Rat is moving! Its position is: " + ratToMove.ratPositionX + " " + ratToMove.ratPositionY);
+        // False er et ledigt felt, hvor true er en væg
+        //
+        switch (ratToMove.direction) {
+            case "n":
+                // Drej mod W
+                if (mazeInput[ratToMove.ratPositionX - 1][ratToMove.ratPositionY] == false) {
+                    ratToMove.ratPositionX = ratToMove.ratPositionX - 1;
+                    ratToMove.direction = "e";
+                }
+                // fortsæt mod S
+                else if (mazeInput[ratToMove.ratPositionX][ratToMove.ratPositionY + 1] == false) {
+                    ratToMove.ratPositionY = ratToMove.ratPositionY + 1;
+                }
+                // rammer væg og følger den mod E
+                else if (mazeInput[ratToMove.ratPositionX][ratToMove.ratPositionY + 1] == true) {
+                    ratToMove.direction = "w";
+                }
+                else {
+                    
+                }   break;
+            case "e":
+                // Drej mod N
+                if (mazeInput[ratToMove.ratPositionX][ratToMove.ratPositionY - 1] == false) {
+                    ratToMove.ratPositionY = ratToMove.ratPositionY - 1;
+                    ratToMove.direction = "s";
+                }
+                // fortsæt mod W
+                else if (mazeInput[ratToMove.ratPositionX - 1][ratToMove.ratPositionY] == false) {
+                    ratToMove.ratPositionX = ratToMove.ratPositionX - 1;
+                }
+                // rammer væg og følger den mod S
+                else if (mazeInput[ratToMove.ratPositionX - 1][ratToMove.ratPositionY] == true) {
+                    ratToMove.direction = "n";
+                }
+                else {
+                    
+                }   break;
+            case "s":
+                // Drej mod E
+                if (mazeInput[ratToMove.ratPositionX + 1][ratToMove.ratPositionY] == false) {
+                    ratToMove.ratPositionX = ratToMove.ratPositionX + 1;
+                    ratToMove.direction = "w";
+                }
+                // fortsæt mod N
+                else if (mazeInput[ratToMove.ratPositionX][ratToMove.ratPositionY - 1] == false) {
+                    ratToMove.ratPositionY = ratToMove.ratPositionY - 1;
+                }
+                // rammer væg og følger den mod W
+                else if (mazeInput[ratToMove.ratPositionX][ratToMove.ratPositionY - 1] == true) {
+                    ratToMove.direction = "e";
+                }
+                else {
+                    
+                }   break;
+            case "w":
+                // Drej mod S
+                if (mazeInput[ratToMove.ratPositionX][ratToMove.ratPositionY + 1] == false) {
+                    ratToMove.ratPositionY = ratToMove.ratPositionY + 1;
+                    ratToMove.direction = "n";
+                }
+                // fortsæt mod E
+                else if (mazeInput[ratToMove.ratPositionX + 1][ratToMove.ratPositionY] == false) {
+                    ratToMove.ratPositionX = ratToMove.ratPositionX + 1;
+                }
+                // rammer væg og følger den mod N
+                else if (mazeInput[ratToMove.ratPositionX + 1][ratToMove.ratPositionY] == true) {
+                ratToMove.direction = "s";
+            }
+            else {
+                
+            }   break;
+        }
+    }
+
+    //Denne type rotte tager et skridt ind i labyrinten og bevæger sig derefter tilfældigt i en af 4 retninger (n, s, e, w)
+    private void randomMove(boolean[][] mazeInput, Rat ratToMove) {
+        
+        System.out.println("Rat is random moving! It is at: " + ratToMove.ratPositionX + " " + ratToMove.ratPositionY);
+        
+        switch (ratToMove.direction) {
+            case "n":
+                
+                //Den ekstra line i if sætningne her sikrer rotten ikke går ud hvor den kom ind i mazen, ved at holde den væk fra den øverste række af pladser
+                if (mazeInput[ratToMove.ratPositionX - 1][ratToMove.ratPositionY] == false &&
+                    ratToMove.ratPositionX - 1 > 0){
+                    ratToMove.ratPositionX = ratToMove.ratPositionX - 1;
+                }
+                
+                break;
+            case "e":
+                
+                if (mazeInput[ratToMove.ratPositionX][ratToMove.ratPositionY - 1] == false){
+                    ratToMove.ratPositionY = ratToMove.ratPositionY - 1;
+                }
+                
+                break;
+            case "s":
+                
+                if (mazeInput[ratToMove.ratPositionX + 1][ratToMove.ratPositionY] == false){
+                    ratToMove.ratPositionX = ratToMove.ratPositionX + 1;
+                }
+                
+                break;
+            case "w":
+                
+                if (mazeInput[ratToMove.ratPositionX][ratToMove.ratPositionY + 1] == false){
+                    ratToMove.ratPositionY = ratToMove.ratPositionY + 1;
+                }
+                
+                break;
+        }
+        
+        int newRD = new Random().nextInt(4);
+        
+        if (newRD == 0){
+            ratToMove.direction = "n";
+        }
+        else if (newRD == 1){
+            ratToMove.direction = "w";
+        }
+        else if (newRD == 2){
+            ratToMove.direction = "s";
+        }
+        else if (newRD == 3){
+            ratToMove.direction = "e";
+        }
+        else {
+            System.out.println("Error with random movement");
+        }
+        
+    }
+    
+    //Denne type rotte kan hoppe over vægge op til 2 felter tykke, hvis det ikke er muligt bevæger den sig hen til en væg.
+    // Der er problemer med at hvis den kigger ud af labyrinthen så smider den ArrayIndexOutOfBoundsException og stopper selvom den er caught (stopper er her problemet
+    // da jeg gerne ville have den til bare at fortsætte med resten af koden)
+    private void wallJumper(boolean[][] mazeInput, Rat ratToMove){
+        System.out.println("Rat is moving! Its position is: " + ratToMove.ratPositionX + " " + ratToMove.ratPositionY);
+        // False er et ledigt felt, hvor true er en væg
+        //
+        
+        switch (ratToMove.direction) {
+            case "n":
+                // jump over one tile
+                if (mazeInput[ratToMove.ratPositionX][ratToMove.ratPositionY + 1] == true &&
+                    mazeInput[ratToMove.ratPositionX][ratToMove.ratPositionY + 2] == false){
+                    
+                    if (ratToMove.ratPositionY + 2 < 10) {ratToMove.ratPositionY = ratToMove.ratPositionY + 2;}
+                }
+                // jump over 2 tiles
+                else if (mazeInput[ratToMove.ratPositionX][ratToMove.ratPositionY + 1] == true &&
+                         mazeInput[ratToMove.ratPositionX][ratToMove.ratPositionY + 2] == true &&
+                         mazeInput[ratToMove.ratPositionX][ratToMove.ratPositionY + 3] == false){
+                    
+                    if (ratToMove.ratPositionY + 3 < 10) {ratToMove.ratPositionY = ratToMove.ratPositionY + 3;}
+                }
+                // fortsæt mod S
+                else if (mazeInput[ratToMove.ratPositionX][ratToMove.ratPositionY + 1] == false) {
+                    ratToMove.ratPositionY = ratToMove.ratPositionY + 1;
+                }
+                // Drej mod W
+                else if (mazeInput[ratToMove.ratPositionX - 1][ratToMove.ratPositionY] == false) {
+                    ratToMove.ratPositionX = ratToMove.ratPositionX - 1;
+                    ratToMove.direction = "e";
+                }
+                
+                // rammer væg og følger den mod E
+                else if (mazeInput[ratToMove.ratPositionX][ratToMove.ratPositionY + 1] == true) {
+                    ratToMove.direction = "w";
+                }
+                else {
+                    
+                }   break;
+            case "e":
+                // Jump one tile
+                if (mazeInput[ratToMove.ratPositionX - 1][ratToMove.ratPositionY] == true &&
+                    mazeInput[ratToMove.ratPositionX - 2][ratToMove.ratPositionY] == false){
+                    
+                    if (ratToMove.ratPositionX - 2 >= 0) {ratToMove.ratPositionX = ratToMove.ratPositionX - 2;}
+                }
+                // Jump two tiles
+                else if (mazeInput[ratToMove.ratPositionX - 1][ratToMove.ratPositionY] == true &&
+                         mazeInput[ratToMove.ratPositionX - 2][ratToMove.ratPositionY] == true &&
+                         mazeInput[ratToMove.ratPositionX - 3][ratToMove.ratPositionY] == false){
+                    
+                    if (ratToMove.ratPositionX - 3 >= 0) {ratToMove.ratPositionX = ratToMove.ratPositionX - 3;}
+                }
+                // fortsæt mod W
+                else if (mazeInput[ratToMove.ratPositionX - 1][ratToMove.ratPositionY] == false) {
+                    ratToMove.ratPositionX = ratToMove.ratPositionX - 1;
+                }
+                // Drej mod N
+                else if (mazeInput[ratToMove.ratPositionX][ratToMove.ratPositionY - 1] == false) {
+                    ratToMove.ratPositionY = ratToMove.ratPositionY - 1;
+                    ratToMove.direction = "s";
+                }
+                
+                // rammer væg og følger den mod S
+                else if (mazeInput[ratToMove.ratPositionX - 1][ratToMove.ratPositionY] == true) {
+                    ratToMove.direction = "n";
+                }
+                else {
+                    
+                }   break;
+            case "s":
+                // Jump one tile
+                if (mazeInput[ratToMove.ratPositionX][ratToMove.ratPositionY - 1] == true &&
+                    mazeInput[ratToMove.ratPositionX][ratToMove.ratPositionY - 2] == false){
+                    
+                    if (ratToMove.ratPositionY - 2 >= 0) {ratToMove.ratPositionY = ratToMove.ratPositionY - 2;}
+                }
+                // Jump two tiles
+                else if (mazeInput[ratToMove.ratPositionX][ratToMove.ratPositionY - 1] == true &&
+                         mazeInput[ratToMove.ratPositionX][ratToMove.ratPositionY - 2] == true &&
+                         mazeInput[ratToMove.ratPositionX][ratToMove.ratPositionY - 3] == false){
+                    
+                    if (ratToMove.ratPositionY - 3 >= 0) {ratToMove.ratPositionY = ratToMove.ratPositionY - 3;}
+                }  
+                // fortsæt mod N
+                else if (mazeInput[ratToMove.ratPositionX][ratToMove.ratPositionY - 1] == false) {
+                    ratToMove.ratPositionY = ratToMove.ratPositionY - 1;
+                }
+                // Drej mod E
+                else if (mazeInput[ratToMove.ratPositionX + 1][ratToMove.ratPositionY] == false) {
+                    ratToMove.ratPositionX = ratToMove.ratPositionX + 1;
+                    ratToMove.direction = "w";
+                }
+                
+                // rammer væg og følger den mod W
+                else if (mazeInput[ratToMove.ratPositionX][ratToMove.ratPositionY - 1] == true) {
+                    ratToMove.direction = "e";
+                }
+                else {
+                    
+                }   break;
+            case "w":
+                // Jump one tile
+                if (mazeInput[ratToMove.ratPositionX + 1][ratToMove.ratPositionY] == true &&
+                    mazeInput[ratToMove.ratPositionX + 2][ratToMove.ratPositionY] == false){
+                    
+                    if (ratToMove.ratPositionX + 2 < 10) {ratToMove.ratPositionX = ratToMove.ratPositionX + 2;}
+                }
+                // Jump two tiles
+                else if (mazeInput[ratToMove.ratPositionX + 1][ratToMove.ratPositionY] == true &&
+                         mazeInput[ratToMove.ratPositionX + 2][ratToMove.ratPositionY] == true &&
+                         mazeInput[ratToMove.ratPositionX + 3][ratToMove.ratPositionY] == false){
+                    
+                    if (ratToMove.ratPositionX + 3 < 10) {ratToMove.ratPositionX = ratToMove.ratPositionX + 3;}
+                }
+                // fortsæt mod E
+                else if (mazeInput[ratToMove.ratPositionX + 1][ratToMove.ratPositionY] == false) {
+                    ratToMove.ratPositionX = ratToMove.ratPositionX + 1;
+                }
+                // Drej mod S
+                else if (mazeInput[ratToMove.ratPositionX][ratToMove.ratPositionY + 1] == false) {
+                    ratToMove.ratPositionY = ratToMove.ratPositionY + 1;
+                    ratToMove.direction = "n";
+                }
+                
+                // rammer væg og følger den mod N
+                else if (mazeInput[ratToMove.ratPositionX + 1][ratToMove.ratPositionY] == true) {
+                ratToMove.direction = "s";
+            }
+            else {
+                
+            }   break;
+        }
+        
+    }
+    
+    public JPanel paintRat(LFrame lf, Rat ratToMove){
+        // JPanelet er kan også initialiseres i starten af Rat og ikk i denne metode
+        // men hvis den ikke initialiseres i starten af Rat-klassen dur lortet ikke
+//        JPanel ratBro = new JPanel();
+        ratBro.setBackground(Color.RED);
+        
+        ratBro.setSize(50, 50);
+        ratBro.setLocation(80 * ratToMove.ratPositionY + 15, 77 * ratToMove.ratPositionX + 15);
+        
+        ratBro.setVisible(true);
+        
+        return ratBro;
+        
+       
+        
+    }
+    
+}
