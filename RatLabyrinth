@@ -1,0 +1,85 @@
+package ratlabyrinth;
+
+import java.awt.Component;
+
+
+
+/**
+ *
+ * @author Marcus Melgaard
+ * 
+ * For at aendre rottetypen gå til hvor der bliver lavet en instance af Rat med en constructor og ændrer tallet
+ * De forskellige muligheder kan ses i Rat-classen
+ */
+public class RatLabyrinth {
+
+    
+    
+    public static void main(String[] args) {
+        
+        
+        
+        //laver et grid, sætter det ind i en frame
+        LGrid LGO = new LGrid();
+        
+        // DO NOT TOUCH!
+        LGO.GridButtons();
+        // DO NOT TOUCH!
+        
+        
+        
+        LFrame frameObject = new LFrame();
+        
+//        Dette kan printe true/false for alle i mazeArray          
+//        for (int ii = 0; ii < 10; ii++){
+//            for (int jj = 0; jj < 10; jj++){
+//               System.out.print(LGO.getMazeArray(ii, jj) + " "); 
+//            }
+//            System.out.println("");
+//        }
+        
+        //laver en instance af Rat
+        Rat MasterSplinter = new Rat(2);        
+        MasterSplinter.placeRat(LGO.mazeArray);
+        
+        
+        frameObject.add((Component) MasterSplinter.paintRat(frameObject, MasterSplinter));
+        frameObject.add((Component) LGO.GridButtons());
+        
+        
+        
+        ratMovement(MasterSplinter, LGO.mazeArray, frameObject);           
+
+    }    
+        
+        
+    
+    // Repaint dur og rotten bevæger sig gennem mazen
+    private static void ratMovement(Rat ratToMove,boolean[][] mazeInput, LFrame lf){
+        boolean stopLoop = true;
+    // Kører et loop der flytter instancen af Rat, som stopper når rotten når exit
+        while (stopLoop){
+            ratToMove.paintRat(lf, ratToMove);
+           // lf.revalidate();
+           // lf.repaint();                  
+            if (ratToMove.ratPositionX == 9){
+                System.out.println("Rat found the exit! It is at: " 
+                                    + ratToMove.ratPositionX + " " + ratToMove.ratPositionY);
+                stopLoop = false;
+            }
+            else {
+                ratToMove.autoMove(mazeInput, ratToMove);
+                try{
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    System.out.println("Loop interrupted");
+                }
+            }
+            
+        }
+
+    }   
+    
+    
+    
+}
