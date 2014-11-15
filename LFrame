@@ -1,0 +1,25 @@
+package ratlabyrinth;
+
+import javax.swing.JFrame;
+
+/**
+ *
+ * @author Blotto
+ */
+class LFrame extends JFrame{
+    
+    // sætter en frame, med size 800, 800. i midten af skærmen, den kan ikke resizes
+    // den lukker programmet sammen med vinduet.
+    LFrame(){
+        super("Labyrinth");
+        setSize(800,800);
+        setLocationRelativeTo(null);
+        setResizable(false);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setVisible(true);
+        
+    }
+    
+   
+    
+}
